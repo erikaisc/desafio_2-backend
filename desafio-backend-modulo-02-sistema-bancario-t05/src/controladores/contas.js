@@ -1,4 +1,4 @@
-const {banco,contas} = require('../bancodedados')
+const {banco,contas} = require('../bancodedados');
 
 const listarContas = (req, res) => {
     const {senha_banco} = req.query;
