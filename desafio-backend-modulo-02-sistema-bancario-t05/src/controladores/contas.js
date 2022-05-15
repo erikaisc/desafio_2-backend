@@ -46,7 +46,49 @@ const criarConta = (req, res) => {
     return res.status(201).json();
 }
 
+const atualizarUsuario = (req, res) => {
+    const {nome,cpf,data_nascimento,telefone,email,senha} = req.body;
+    const {numeroConta} = req.params;
+
+    if(!nome || !cpf || !data_nascimento || !telefone || !email || !senha){
+        return res.status(400).json({mensagem : "Todos os campos são obrigatórios!"});
+    };
+
+    const contaEncontrada = contas.find(conta => conta.numero === Number(numeroConta));
+
+    if(!contaEncontrada){
+        return res.status(404).json({mensagem : "Conta não encontrada!"});
+    }
+
+    if(cpf !== contaEncontrada.usuario.cpf){
+        const existeCPF = contas.find(conta => conta.usuario.cpf === cpf);
+
+        if(existeCPF){
+            return res.status(404).json({mensagem : "O CPF cadastrado já existe!"});
+
+        }
+    }
+
+    if(email !== contaEncontrada.usuario.email){
+        const existeEmail = contas.find(conta => conta.usuario.email === email);
+
+        if(existeEmail){
+            return res.status(404).json({mensagem : "O E-mail cadastrado já existe!"});
+        }
+    }
+    contaEncontrada.usuario = {nome,
+        cpf,
+        data_nascimento,
+        telefone,
+        email,
+        senha
+    };
+
+    return res.status(204).json();
+}
+
 module.exports = {
     listarContas,
-    criarConta
+    criarConta,
+    atualizarUsuario
 }

@@ -4,6 +4,7 @@ const contas = require('./controladores/contas')
 
 rotas.get('/contas',contas.listarContas);
 rotas.post('/contas',contas.criarConta);
+rotas.put('/contas/:numeroConta/usuario',contas.atualizarUsuario);
 
 module.exports = rotas;
 
