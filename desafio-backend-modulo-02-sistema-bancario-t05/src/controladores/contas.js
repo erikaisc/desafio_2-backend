@@ -43,7 +43,7 @@ const criarConta = (req, res) => {
     }
     contas.push(novaConta);
 
-    return res.status(201).json();
+    return res.status(201).send();
 }
 
 const atualizarUsuario = (req, res) => {
@@ -84,11 +84,30 @@ const atualizarUsuario = (req, res) => {
         senha
     };
 
-    return res.status(204).json();
+    return res.status(204).send();
+}
+
+const excluirConta = (req, res) => {
+    const {numeroConta} = req.params;
+
+    const contaEncontrada = contas.find(conta => conta.numero === Number(numeroConta));
+
+    if(!contaEncontrada){
+        return res.status(404).json({mensagem : "Conta não encontrada!"});
+    };
+
+    if(contaEncontrada.saldo > 0){
+        return res.status(403).json({mensagem : "Não é possível excluir uma conta com saldo!"});
+    };
+
+    contas = contas.filter(conta => conta.numero !== Number(numeroConta));
+
+    return res.status(204).send();
 }
 
 module.exports = {
     listarContas,
     criarConta,
-    atualizarUsuario
+    atualizarUsuario,
+    excluirConta
 }
