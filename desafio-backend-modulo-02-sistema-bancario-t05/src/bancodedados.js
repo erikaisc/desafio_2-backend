@@ -1,4 +1,5 @@
 module.exports = {
+    ultimoID: 1,
     banco: {
         nome: 'Cubos Bank',
         numero: '123',
@@ -9,4 +10,4 @@ module.exports = {
     saques: [],
     depositos: [],
     transferencias: []
-};
+}
