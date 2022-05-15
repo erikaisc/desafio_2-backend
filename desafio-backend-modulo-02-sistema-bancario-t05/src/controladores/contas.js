@@ -17,28 +17,8 @@ const listarContas = (req, res) => {
 const criarConta = (req, res) => {
     const {nome,cpf,data_nascimento,telefone,email,senha} = req.body;
 
-    if(!nome){
-        return res.status(400).json({mensagem : "O nome do cliente é obrigatório!"});
-    };
-
-    if(!cpf){
-        return res.status(400).json({mensagem : "O CPF do cliente é obrigatório!"});
-    };
-
-    if(!data_nascimento){
-        return res.status(400).json({mensagem : "A data de nascimento do cliente é obrigatória!"});
-    };
-
-    if(!telefone){
-        return res.status(400).json({mensagem : "O telefone do cliente é obrigatório!"});
-    };
-
-    if(!email){
-        return res.status(400).json({mensagem : "O email do cliente é obrigatório!"});
-    };
-
-    if(!senha){
-        return res.status(400).json({mensagem : "A senha do cliente é obrigatória!"});
+    if(!nome || !cpf || !data_nascimento || !telefone || !email || !senha){
+        return res.status(400).json({mensagem : "Todos os campos são obrigatórios!"});
     };
 
     const contaExiste = contas.find(conta => {
@@ -47,7 +27,7 @@ const criarConta = (req, res) => {
 
     if(contaExiste){
         return res.status(400).json({mensagem : "E-mail e/ou CPF já existente!"});
-    }
+    };
 
     const novaConta = {
         numero: ultimoID++,
@@ -63,7 +43,7 @@ const criarConta = (req, res) => {
     }
     contas.push(novaConta);
 
-    return res.status(201);
+    return res.status(201).json();
 }
 
 module.exports = {
