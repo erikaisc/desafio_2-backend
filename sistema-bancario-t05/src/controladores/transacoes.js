@@ -1,4 +1,5 @@
 let {contas,saques,depositos,transferencias} = require('../bancodedados');
+const {format} = require('date-fns');
 
 
 const depositar = (req, res) => {
@@ -21,10 +22,14 @@ const depositar = (req, res) => {
     contaEncontrada.saldo += Number(valor);
 
     const registro = {
-        data: "",
+        data: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
         numero_conta,
         valor
     }
+
+    depositos.push(registro);
+
+    return res.status(201).send();
 }
 
 module.exports = {
