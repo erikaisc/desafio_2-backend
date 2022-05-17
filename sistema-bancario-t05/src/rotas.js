@@ -9,6 +9,8 @@ rotas.put('/contas/:numeroConta/usuario',contas.atualizarUsuario);
 rotas.delete('/contas/:numeroConta',contas.excluirConta);
 
 rotas.post('/transacoes/depositar',transacoes.depositar);
+rotas.post('/transacoes/sacar',transacoes.sacar);
+
 
 
 module.exports = rotas;

@@ -32,6 +32,41 @@ const depositar = (req, res) => {
     return res.status(201).send();
 }
 
+const sacar = (req, res) => {
+    const {numero_conta,valor,senha} = req.body;
+
+    if(!numero_conta || !valor || !senha){
+        return res.status(400).json({mensagem : "O número da conta, o valor e a senha são obrigatórios!"});
+    };
+
+    const contaEncontrada = contas.find(conta => conta.numero === Number(numero_conta));
+
+    if(!contaEncontrada){
+        return res.status(404).json({mensagem : "Conta não encontrada!"});
+    };
+
+    if(contaEncontrada.usuario.senha !== senha){
+        return res.status(400).json({mensagem : "Senha incorreta!"});
+    }
+
+    if(contaEncontrada.saldo < valor){
+        return res.status(403).json({mensagem : "Saldo insuficiente!"});
+    };
+
+    contaEncontrada.saldo -= Number(valor);
+
+    const registro = {
+        data: format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
+        numero_conta,
+        valor
+    }
+
+    saques.push(registro);
+
+    return res.status(201).send();
+}
+
 module.exports = {
-    depositar
+    depositar,
+    sacar
 }
