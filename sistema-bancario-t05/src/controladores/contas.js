@@ -1,4 +1,4 @@
-let {banco,contas,ultimoID} = require('../bancodedados');
+let {banco,contas,ultimoID,depositos,saques,transferencias} = require('../bancodedados');
 
 const listarContas = (req, res) => {
     const {senha_banco} = req.query;
@@ -105,9 +105,66 @@ const excluirConta = (req, res) => {
     return res.status(204).send();
 }
 
+const saldo = (req, res) => {
+    const {numero_conta,senha} = req.query;
+
+    if(!numero_conta || !senha){
+        return res.status(400).json({mensagem : "O número da conta e a senha são obrigatórios!"});
+    };
+    
+    const contaEncontrada = contas.find(conta => conta.numero === Number(numero_conta));
+
+    if(!contaEncontrada){
+        return res.status(404).json({mensagem : "Conta não encontrada!"});
+    };
+
+    if(contaEncontrada.usuario.senha !== senha){
+        return res.status(400).json({mensagem : "Senha inválida!"});
+    }
+
+    return res.json({saldo: contaEncontrada.saldo});
+
+}
+
+const extrato = (req, res) => {
+    const {numero_conta,senha} = req.query;
+
+    if(!numero_conta || !senha){
+        return res.status(400).json({mensagem : "O número da conta e a senha são obrigatórios!"});
+    };
+    
+    const contaEncontrada = contas.find(conta => conta.numero === Number(numero_conta));
+
+    if(!contaEncontrada){
+        return res.status(404).json({mensagem : "Conta não encontrada!"});
+    };
+
+    if(contaEncontrada.usuario.senha !== senha){
+        return res.status(400).json({mensagem : "Senha inválida!"});
+    };
+
+    const extratoDeposito = depositos.filter(deposito => Number(deposito.numero_conta) === Number(numero_conta));
+    const extratoSaque = saques.filter(saque => Number(saques.numero_conta) === Number(numero_conta));
+
+    const transferenciasEnviadas = transferencias.filter(transferencia => Number(transferencia.numero_conta_origem) === Number(numero_conta));
+
+    const transferenciasRecebidas = transferencias.filter(transferencia => Number(transferencia.numero_conta_destino) === Number(numero_conta));
+
+    return res.json({
+        depositos: extratoDeposito,
+        saques: extratoSaque,
+        transferenciasEnviadas,
+        transferenciasRecebidas
+    });
+
+}
+
+
 module.exports = {
     listarContas,
     criarConta,
     atualizarUsuario,
-    excluirConta
+    excluirConta,
+    saldo,
+    extrato
 }
